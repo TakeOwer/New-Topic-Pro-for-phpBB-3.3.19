@@ -11,6 +11,16 @@ Developed by Salvo Cortesiano – support: info@netshadows.de
 Based on “New Topic” by dmzx (`dmzx/newtopic` 1.0.3), rewritten from scratch.
 
 ---
+<img width="477" height="663" alt="Screenshot 2026-10-06 113311" src="https://github.com/user-attachments/assets/6b328c97-0244-4bdb-bbc9-0d1009bb078d" />
+---
+<img width="470" height="681" alt="Screenshot 2026-10-06 113322" src="https://github.com/user-attachments/assets/efa13ac4-32ab-4718-af32-10b173035496" />
+---
+<img width="2279" height="957" alt="Screenshot 2026-10-05 124432" src="https://github.com/user-attachments/assets/eb635f61-a77c-483e-b1dc-9d3185c08aa7" />
+---
+<img width="2287" height="821" alt="Screenshot 2026-10-05 124445" src="https://github.com/user-attachments/assets/36d7771a-cfdb-471a-a404-8830de75e5a2" />
+---
+<img width="1906" height="1251" alt="Screenshot 2026-10-05 124453" src="https://github.com/user-attachments/assets/72727ce8-ca93-4446-97a1-94ddc1699011" />
+---
 
 ## Table of contents
 
