@@ -1,0 +1,74 @@
+{% include 'overall_header.html' %}
+
+<h1>{{ lang('ACP_NEWTOPIC_TITLE') }} &ndash; {{ lang('ACP_NEWTOPIC_CHECKUP') }}</h1>
+{% include '@salvocortesiano_newtopic/acp_newtopic_badges.html' %}
+
+<p>{{ lang('ACP_NEWTOPIC_CHECKUP_EXPLAIN') }}</p>
+
+<style>
+.nt-ck-summary { margin: 0 0 12px; font-size: 14px; font-weight: bold; }
+.nt-ck-table td { font-size: 13px; line-height: 1.5; padding: 7px 8px; vertical-align: top; }
+.nt-pill { display: inline-block; min-width: 54px; padding: 3px 8px; border-radius: 10px; color: #fff; font-size: 11px; font-weight: bold; text-align: center; }
+.nt-pill-ok { background: #3a9b3a; }
+.nt-pill-warn { background: #e08a1e; }
+.nt-pill-error { background: #c9302c; }
+.nt-pill-info { background: #6c7a89; }
+.nt-pv { list-style: none; margin: 0; padding: 0; max-width: 720px; border: 1px solid #d7dde3; border-radius: 6px; background: #fff; }
+.nt-pv li { display: flex; justify-content: space-between; gap: 16px; padding: 6px 10px; border-bottom: 1px solid #eef1f4; font-size: 13px; }
+.nt-pv li:last-child { border-bottom: 0; }
+.nt-pv .nt-pv-off { color: #7a8591; }
+.nt-pv .nt-pv-state { font-size: 12px; white-space: nowrap; }
+.nt-pv .nt-pv-on .nt-pv-state { color: #2e7d32; font-weight: bold; }
+</style>
+
+<form id="acp_newtopic_checkup" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<dl>
+			<dt><label for="simulate_user">{{ lang('ACP_NEWTOPIC_SIMULATE_USER') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_SIMULATE_USER_EXPLAIN') }}</span></dt>
+			<dd><input type="text" class="inputbox autowidth" name="simulate_user" id="simulate_user" value="{{ SIMULATE_USER }}" size="30" maxlength="255"></dd>
+		</dl>
+	</fieldset>
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" name="run_checkup" value="{{ lang('ACP_NEWTOPIC_RUN') }}">
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+
+{% if S_CHECKUP_RAN %}
+<p class="nt-ck-summary">{{ lang('ACP_NEWTOPIC_SUMMARY', CHECKUP_OK, CHECKUP_WARN, CHECKUP_ERROR) }}</p>
+
+<table class="table1 zebra-table nt-ck-table">
+	<thead>
+		<tr>
+			<th style="width: 80px;">{{ lang('ACP_NEWTOPIC_COL_STATUS') }}</th>
+			<th style="width: 30%;">{{ lang('ACP_NEWTOPIC_COL_CHECK') }}</th>
+			<th>{{ lang('ACP_NEWTOPIC_COL_DETAIL') }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for check in loops.checks %}
+		<tr>
+			<td><span class="nt-pill nt-pill-{{ check.STATUS }}">{{ check.STATUS_TEXT }}</span></td>
+			<td><strong>{{ check.TITLE }}</strong></td>
+			<td>{{ check.DETAIL }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+{% if S_PREVIEW %}
+<h2>{{ PREVIEW_TITLE }}</h2>
+<p>{{ lang('ACP_NEWTOPIC_PREVIEW_EXPLAIN') }}</p>
+<ul class="nt-pv">
+	{% for item in loops.preview %}
+	<li class="{{ item.S_SELECTABLE ? 'nt-pv-on' : 'nt-pv-off' }}">
+		<span style="padding-left: {{ item.DEPTH * 18 }}px;">{% if item.S_SELECTABLE %}{{ item.NAME }}{% else %}<em>{{ item.NAME }}</em>{% endif %}</span>
+		<span class="nt-pv-state">{{ item.S_SELECTABLE ? lang('ACP_NEWTOPIC_PREVIEW_OK') : item.REASON_TEXT }}</span>
+	</li>
+	{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% include '@salvocortesiano_newtopic/acp_newtopic_footer.html' %}
+{% include 'overall_footer.html' %}

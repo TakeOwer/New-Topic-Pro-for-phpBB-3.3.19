@@ -1,0 +1,86 @@
+{% if S_NEWTOPIC_SHOW %}
+{% INCLUDEJS '@salvocortesiano_newtopic/js/newtopic.js' %}
+<li class="rightside nt-host nt-mobile-{{ NEWTOPIC_MOBILE }}" data-nt-host data-user="{{ NEWTOPIC_USER_KEY }}" data-recent="{{ NEWTOPIC_RECENT }}" style="--nt-accent: {{ NEWTOPIC_ACCENT }};">
+	<button type="button" class="nt-trigger" data-nt-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="nt-panel" title="{{ lang('NEWTOPIC_BUTTON_TITLE')|e('html') }}">
+		<svg class="nt-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+		<span class="nt-trigger-label">{{ lang('NEWTOPIC_BUTTON') }}</span>
+		<svg class="nt-ico nt-caret" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+	</button>
+
+	<div class="nt-panel" id="nt-panel" data-nt-panel role="dialog" aria-modal="false" aria-labelledby="nt-panel-title" tabindex="-1" hidden style="--nt-accent: {{ NEWTOPIC_ACCENT }};"
+		data-l-none="{{ NEWTOPIC_L_RESULTS_0|e('html') }}"
+		data-l-one="{{ NEWTOPIC_L_RESULTS_1|e('html') }}"
+		data-l-many="{{ NEWTOPIC_L_RESULTS_2|e('html') }}"
+		data-l-empty="{{ lang('NEWTOPIC_NO_RESULTS')|e('html') }}">
+
+		<div class="nt-head">
+			<span class="nt-grip" aria-hidden="true"></span>
+			<h2 class="nt-title" id="nt-panel-title">{{ lang('NEWTOPIC_PANEL_TITLE') }}</h2>
+			<button type="button" class="nt-close" data-nt-close aria-label="{{ lang('NEWTOPIC_CLOSE')|e('html') }}">
+				<svg class="nt-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+			</button>
+		</div>
+
+		{% if S_NEWTOPIC_SEARCH %}
+		<div class="nt-search">
+			<svg class="nt-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+			<input type="search" class="nt-search-input" data-nt-search placeholder="{{ lang('NEWTOPIC_SEARCH')|e('html') }}" aria-label="{{ lang('NEWTOPIC_SEARCH_LABEL')|e('html') }}" autocomplete="off" spellcheck="false" enterkeyhint="go">
+		</div>
+		{% endif %}
+
+		<div class="nt-scroll" data-nt-scroll>
+			{% if S_NEWTOPIC_CURRENT %}
+			<a class="nt-here" href="{{ U_NEWTOPIC_CURRENT }}" data-nt-pick="{{ NEWTOPIC_CURRENT_ID }}" data-nt-here>
+				<svg class="nt-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+				<span class="nt-here-text"><span class="nt-here-label">{{ lang('NEWTOPIC_HERE') }}</span><span class="nt-here-name">{{ NEWTOPIC_CURRENT_NAME }}</span></span>
+			</a>
+			{% endif %}
+
+			{% if NEWTOPIC_RECENT > 0 %}
+			<div class="nt-section" data-nt-recent hidden>
+				<p class="nt-section-title">{{ lang('NEWTOPIC_RECENT') }}</p>
+				<ul class="nt-flat"></ul>
+			</div>
+			<p class="nt-section-title" data-nt-all-title hidden>{{ lang('NEWTOPIC_ALL') }}</p>
+			{% endif %}
+
+			<ul class="nt-tree" data-nt-list>
+				{% for f in loops.newtopic_forums %}
+				<li class="nt-row{% if f.S_SELECTABLE %} nt-row--on{% else %} nt-row--off{% endif %}{% if f.S_CATEGORY %} nt-row--cat{% endif %}{% if f.S_CURRENT %} nt-row--current{% endif %}" data-id="{{ f.ID }}" data-anc="{{ f.ANCESTORS }}" style="--d: {{ f.DEPTH }};">
+					{% if f.S_HAS_KIDS %}
+					<button type="button" class="nt-toggle" data-nt-toggle aria-expanded="true" aria-label="{{ lang('NEWTOPIC_TOGGLE')|e('html') }}">
+						<svg class="nt-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</button>
+					{% else %}
+					<span class="nt-toggle-gap" aria-hidden="true"></span>
+					{% endif %}
+					{% if f.S_SELECTABLE %}
+					<a class="nt-link" href="{{ f.U_POST }}" data-nt-pick="{{ f.ID }}"{% if f.S_CURRENT %} aria-current="page"{% endif %}>
+						<span class="nt-name">{{ f.NAME }}</span>
+						<span class="nt-meta">{{ f.TOPICS }}</span>
+					</a>
+					{% else %}
+					<span class="nt-label" title="{{ f.REASON_TEXT|e('html') }}">
+						<span class="nt-name">{{ f.NAME }}</span>
+						{% if not f.S_CATEGORY %}<span class="nt-reason">{{ f.REASON_TEXT }}</span>{% endif %}
+					</span>
+					{% endif %}
+				</li>
+				{% endfor %}
+			</ul>
+
+			<p class="nt-empty" data-nt-empty hidden></p>
+		</div>
+
+		<p class="nt-foot">{{ lang('NEWTOPIC_KBD_HINT') }}</p>
+		<p class="nt-sr" data-nt-live aria-live="polite"></p>
+	</div>
+
+	{% if NEWTOPIC_MOBILE == 'fab' %}
+	<button type="button" class="nt-fab nt-fab--{{ NEWTOPIC_FAB_SIDE }}" data-nt-fab aria-haspopup="dialog" aria-expanded="false" aria-controls="nt-panel" style="--nt-accent: {{ NEWTOPIC_ACCENT }};">
+		<svg class="nt-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+		<span class="nt-sr">{{ lang('NEWTOPIC_BUTTON') }}</span>
+	</button>
+	{% endif %}
+</li>
+{% endif %}

@@ -1,0 +1,33 @@
+services:
+    salvocortesiano.newtopic.forum_list:
+        class: salvocortesiano\newtopic\core\forum_list
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@config_text'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    salvocortesiano.newtopic.checkup:
+        class: salvocortesiano\newtopic\core\checkup
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@language'
+            - '@ext.manager'
+            - '@salvocortesiano.newtopic.forum_list'
+            - '%core.root_path%'
+
+    salvocortesiano.newtopic.listener:
+        class: salvocortesiano\newtopic\event\listener
+        arguments:
+            - '@template'
+            - '@dbal.conn'
+            - '@auth'
+            - '@user'
+            - '@language'
+            - '@config'
+            - '@request'
+            - '@salvocortesiano.newtopic.forum_list'
+        tags:
+            - { name: event.listener }

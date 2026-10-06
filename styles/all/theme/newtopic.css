@@ -1,0 +1,690 @@
+/**
+ * New Topic Pro - salvocortesiano/newtopic
+ * (c) 2026 Salvo Cortesiano - GPL-2.0-only
+ *
+ * Every colour derives from --nt-accent (set from the ACP) so the widget
+ * follows the board's palette. The panel lives in <body>, outside the style's
+ * containers, so all rules are prefixed with .nt- to avoid clashes.
+ */
+
+.nt-host,
+.nt-panel,
+.nt-fab {
+	--nt-accent: #105289;
+	--nt-ink: #1f2933;
+	--nt-muted: #66717d;
+	--nt-line: #e2e6ea;
+	--nt-surface: #ffffff;
+	--nt-tint: rgba(16, 82, 137, 0.08);
+	--nt-tint-strong: rgba(16, 82, 137, 0.2);
+	--nt-step: 14px;
+}
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	.nt-host,
+	.nt-panel,
+	.nt-fab {
+		--nt-tint: color-mix(in srgb, var(--nt-accent) 9%, transparent);
+		--nt-tint-strong: color-mix(in srgb, var(--nt-accent) 24%, transparent);
+	}
+}
+
+.nt-ico {
+	width: 16px;
+	height: 16px;
+	flex: none;
+	display: block;
+}
+
+.nt-sr {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ---------- trigger in the breadcrumb bar ---------- */
+
+ul.linklist > li.nt-host {
+	line-height: normal;
+	padding-top: 0;
+	display: flex;
+	align-items: center;
+	min-height: 2.2em;
+}
+
+.nt-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 26px;
+	margin: 0;
+	padding: 0 8px 0 9px;
+	border: 0;
+	border-radius: 7px;
+	background: var(--nt-accent);
+	color: #fff;
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap;
+	cursor: pointer;
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+	transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nt-trigger:hover {
+	filter: brightness(1.08);
+}
+
+.nt-trigger:focus-visible {
+	outline: 2px solid var(--nt-accent);
+	outline-offset: 2px;
+}
+
+.nt-trigger .nt-caret {
+	width: 14px;
+	height: 14px;
+	opacity: 0.85;
+	transition: transform 0.18s ease;
+}
+
+.nt-trigger[aria-expanded="true"] .nt-caret {
+	transform: rotate(180deg);
+}
+
+/* ---------- panel ---------- */
+
+.nt-panel {
+	position: fixed;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	max-height: 560px;
+	background: var(--nt-surface);
+	color: var(--nt-ink);
+	border: 1px solid rgba(16, 32, 48, 0.12);
+	border-radius: 12px;
+	box-shadow: 0 24px 48px -12px rgba(16, 32, 48, 0.3), 0 2px 6px rgba(16, 32, 48, 0.08);
+	font-family: inherit;
+	font-size: 14px;
+	line-height: 1.35;
+	text-align: left;
+	opacity: 0;
+	transform: translateY(-4px);
+	transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.nt-panel[hidden] {
+	display: none;
+}
+
+.nt-panel.is-open {
+	opacity: 1;
+	transform: none;
+}
+
+.nt-panel:focus {
+	outline: none;
+}
+
+.nt-panel *,
+.nt-panel *::before,
+.nt-panel *::after {
+	box-sizing: border-box;
+}
+
+.nt-head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 14px 10px 10px 16px;
+}
+
+.nt-grip {
+	display: none;
+}
+
+.nt-title {
+	flex: 1;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--nt-ink);
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.nt-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	border: 0;
+	border-radius: 7px;
+	background: transparent;
+	color: var(--nt-muted);
+	cursor: pointer;
+}
+
+.nt-close:hover {
+	background: var(--nt-tint);
+	color: var(--nt-ink);
+}
+
+.nt-close:focus-visible {
+	outline: 2px solid var(--nt-accent);
+	outline-offset: 1px;
+}
+
+/* search */
+
+.nt-search {
+	position: relative;
+	margin: 0 12px 8px;
+}
+
+.nt-search .nt-ico {
+	position: absolute;
+	left: 11px;
+	top: 50%;
+	margin-top: -8px;
+	color: var(--nt-muted);
+	pointer-events: none;
+}
+
+.nt-panel .nt-search-input {
+	box-sizing: border-box; /* normalize.css sets content-box on search inputs */
+	display: block;
+	width: 100%;
+	height: 38px;
+	margin: 0;
+	padding: 0 12px 0 34px;
+	border: 1px solid var(--nt-line);
+	border-radius: 8px;
+	background: #f7f9fa;
+	color: var(--nt-ink);
+	font: inherit;
+	font-size: 14px;
+	-webkit-appearance: none;
+	appearance: none;
+	box-shadow: none;
+}
+
+.nt-panel .nt-search-input::placeholder {
+	color: #8a949e;
+}
+
+.nt-panel .nt-search-input:focus {
+	outline: none;
+	border-color: var(--nt-accent);
+	background: #fff;
+	box-shadow: 0 0 0 3px var(--nt-tint-strong);
+}
+
+/* scroll area */
+
+.nt-scroll {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	padding: 2px 8px 10px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.nt-panel a.nt-here,
+.nt-panel a.nt-here:link,
+.nt-panel a.nt-here:visited,
+.nt-panel a.nt-here:hover,
+.nt-panel a.nt-here:focus,
+.nt-panel a.nt-here:active {
+	color: var(--nt-accent);
+	text-decoration: none;
+}
+
+.nt-here .nt-ico {
+	color: var(--nt-accent);
+}
+
+.nt-here {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 2px 2px 8px;
+	padding: 10px 12px;
+	border: 1px solid var(--nt-tint-strong);
+	border-radius: 9px;
+	background: var(--nt-tint);
+	color: var(--nt-accent);
+	text-decoration: none;
+}
+
+.nt-here:hover,
+.nt-here:focus-visible {
+	background: var(--nt-tint-strong);
+	text-decoration: none;
+	outline: none;
+}
+
+.nt-here-text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.nt-here-label {
+	font-size: 12px;
+	color: var(--nt-muted);
+}
+
+.nt-here-name {
+	font-weight: 600;
+	color: var(--nt-ink);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.nt-section-title {
+	margin: 10px 8px 4px;
+	padding: 0;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--nt-muted);
+}
+
+.nt-section-title[hidden],
+.nt-section[hidden] {
+	display: none;
+}
+
+.is-searching .nt-here,
+.is-searching .nt-section,
+.is-searching [data-nt-all-title] {
+	display: none;
+}
+
+/* lists */
+
+.nt-tree,
+.nt-flat {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.nt-flat {
+	margin-bottom: 4px;
+}
+
+.nt-row,
+.nt-flat-row {
+	position: relative;
+	display: flex;
+	align-items: center;
+	margin: 0;
+	padding: 0 0 0 calc(var(--d, 0) * var(--nt-step));
+	list-style: none;
+}
+
+.nt-row[hidden] {
+	display: none;
+}
+
+/* the guide rail that shows where a branch belongs */
+.nt-row:not([style*="--d: 0"])::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: calc(var(--d, 0) * var(--nt-step) - 3px);
+	width: 1px;
+	background: var(--nt-line);
+}
+
+.nt-toggle,
+.nt-toggle-gap {
+	flex: none;
+	width: 22px;
+	height: 22px;
+}
+
+.nt-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 5px;
+	background: transparent;
+	color: var(--nt-muted);
+	cursor: pointer;
+}
+
+.nt-toggle .nt-ico {
+	width: 14px;
+	height: 14px;
+	transition: transform 0.15s ease;
+}
+
+.nt-toggle[aria-expanded="true"] .nt-ico {
+	transform: rotate(90deg);
+}
+
+.nt-toggle:hover {
+	background: var(--nt-tint);
+	color: var(--nt-ink);
+}
+
+.nt-toggle:focus-visible {
+	outline: 2px solid var(--nt-accent);
+	outline-offset: 0;
+}
+
+.is-searching .nt-toggle {
+	visibility: hidden;
+}
+
+.nt-link,
+.nt-label {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 7px 10px;
+	border-radius: 7px;
+}
+
+/*
+ * Many styles colour links with "a:link, a:visited", which outranks a plain
+ * class. These rules win on specificity, and the text spans get their own
+ * colour so nothing inherited from the style's link rules can hide them.
+ */
+.nt-panel a.nt-link,
+.nt-panel a.nt-link:link,
+.nt-panel a.nt-link:visited,
+.nt-panel a.nt-link:hover,
+.nt-panel a.nt-link:focus,
+.nt-panel a.nt-link:active {
+	color: var(--nt-ink);
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.nt-panel a.nt-link:hover,
+.nt-panel a.nt-link:focus-visible {
+	background: var(--nt-tint);
+	outline: none;
+}
+
+.nt-panel a.nt-link:focus-visible {
+	box-shadow: inset 0 0 0 2px var(--nt-accent);
+}
+
+.nt-panel .nt-link .nt-name {
+	color: var(--nt-ink);
+}
+
+.nt-name {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.nt-name mark {
+	padding: 0 1px;
+	border-radius: 2px;
+	background: var(--nt-tint-strong);
+	color: inherit;
+}
+
+.nt-meta {
+	flex: none;
+	font-size: 12px;
+	color: var(--nt-muted);
+	white-space: nowrap;
+}
+
+.nt-panel .nt-row--current .nt-link {
+	position: relative;
+	font-weight: 600;
+}
+
+.nt-panel .nt-row--current .nt-link::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 7px;
+	bottom: 7px;
+	width: 3px;
+	border-radius: 2px;
+	background: var(--nt-accent);
+}
+
+/* categories: headers of their own group */
+.nt-row--cat {
+	margin-top: 8px;
+}
+
+.nt-tree > .nt-row--cat:first-child {
+	margin-top: 0;
+}
+
+.nt-row--cat .nt-label {
+	padding-left: 6px;
+	font-weight: 700;
+	font-size: 13px;
+	color: var(--nt-ink);
+	cursor: default;
+}
+
+/* forums that cannot take a new topic */
+.nt-row--off:not(.nt-row--cat) .nt-label {
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 1px;
+	color: var(--nt-muted);
+	cursor: not-allowed;
+}
+
+.nt-reason {
+	font-size: 11.5px;
+	color: #8a949e;
+}
+
+.nt-empty {
+	margin: 0;
+	padding: 18px 12px;
+	color: var(--nt-muted);
+}
+
+.nt-empty[hidden] {
+	display: none;
+}
+
+.nt-foot {
+	margin: 0;
+	padding: 8px 16px 10px;
+	border-top: 1px solid var(--nt-line);
+	font-size: 11.5px;
+	color: var(--nt-muted);
+}
+
+@media (hover: none) {
+	.nt-foot {
+		display: none;
+	}
+}
+
+/* ---------- backdrop + bottom sheet (phones) ---------- */
+
+.nt-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 9998;
+	background: rgba(15, 23, 31, 0.42);
+}
+
+.nt-backdrop[hidden] {
+	display: none;
+}
+
+html.nt-lock,
+html.nt-lock body {
+	overflow: hidden;
+}
+
+.nt-panel.nt-sheet {
+	top: auto;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: auto;
+	max-height: 86vh;
+	max-height: 86dvh;
+	border-radius: 16px 16px 0 0;
+	border-bottom: 0;
+	padding-bottom: env(safe-area-inset-bottom, 0);
+	transform: translateY(24px);
+	font-size: 15px;
+}
+
+.nt-panel.nt-sheet.is-open {
+	transform: none;
+}
+
+.nt-sheet .nt-grip {
+	display: block;
+	position: absolute;
+	top: 6px;
+	left: 50%;
+	width: 38px;
+	height: 4px;
+	margin-left: -19px;
+	border-radius: 2px;
+	background: #d3d8dd;
+}
+
+.nt-sheet .nt-head {
+	padding-top: 18px;
+}
+
+.nt-panel.nt-sheet .nt-search-input {
+	height: 42px;
+	font-size: 16px; /* stops iOS from zooming in */
+}
+
+.nt-sheet .nt-link,
+.nt-sheet .nt-label {
+	padding-top: 11px;
+	padding-bottom: 11px;
+}
+
+.nt-sheet .nt-toggle,
+.nt-sheet .nt-toggle-gap {
+	width: 32px;
+	height: 32px;
+}
+
+/* ---------- floating button ---------- */
+
+.nt-fab {
+	position: fixed;
+	z-index: 9997;
+	bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 54px;
+	height: 54px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: var(--nt-accent);
+	color: #fff;
+	box-shadow: 0 10px 24px -6px rgba(16, 32, 48, 0.45);
+	cursor: pointer;
+}
+
+.nt-fab .nt-ico {
+	width: 24px;
+	height: 24px;
+	transition: transform 0.18s ease;
+}
+
+.nt-fab[aria-expanded="true"] .nt-ico {
+	transform: rotate(45deg);
+}
+
+.nt-fab--right {
+	right: 18px;
+}
+
+.nt-fab--left {
+	left: 18px;
+}
+
+.nt-fab:focus-visible {
+	outline: 3px solid var(--nt-tint-strong);
+	outline-offset: 3px;
+}
+
+/* ---------- breakpoints ---------- */
+
+@media (max-width: 699px) {
+	.nt-mobile-bar .nt-trigger {
+		width: 30px;
+		height: 28px;
+		padding: 0;
+		justify-content: center;
+	}
+
+	.nt-mobile-bar .nt-trigger-label,
+	.nt-mobile-bar .nt-caret {
+		display: none;
+	}
+
+	ul.linklist > li.nt-mobile-fab,
+	ul.linklist > li.nt-mobile-off {
+		display: none;
+	}
+
+	.nt-fab {
+		display: inline-flex;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nt-panel,
+	.nt-trigger .nt-caret,
+	.nt-toggle .nt-ico,
+	.nt-fab .nt-ico {
+		transition: none;
+	}
+}
+
+@media print {
+	.nt-host,
+	.nt-panel,
+	.nt-fab,
+	.nt-backdrop {
+		display: none !important;
+	}
+}

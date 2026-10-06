@@ -1,0 +1,33 @@
+{
+	"name": "salvocortesiano/newtopic",
+	"type": "phpbb-extension",
+	"description": "Responsive picker to open a new topic in any forum, from every page of the board.",
+	"homepage": "https://netshadows.de",
+	"version": "2.0.1",
+	"time": "2026-10-04",
+	"keywords": ["phpbb", "extension", "newtopic", "new topic"],
+	"license": "GPL-2.0-only",
+	"authors": [
+		{
+			"name": "Salvo Cortesiano",
+			"homepage": "https://netshadows.de",
+			"email": "info@netshadows.de",
+			"role": "Lead Developer"
+		},
+		{
+			"name": "dmzx",
+			"homepage": "http://www.dmzx-web.net",
+			"role": "Original author (New Topic)"
+		}
+	],
+	"require": {
+		"php": ">=7.4",
+		"composer/installers": "~1.0"
+	},
+	"extra": {
+		"display-name": "New Topic Pro",
+		"soft-require": {
+			"phpbb/phpbb": ">=3.3.0,<4.0.0"
+		}
+	}
+}

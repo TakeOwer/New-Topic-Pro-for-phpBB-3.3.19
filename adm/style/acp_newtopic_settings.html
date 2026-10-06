@@ -1,0 +1,105 @@
+{% include 'overall_header.html' %}
+
+<h1>{{ lang('ACP_NEWTOPIC_TITLE') }} &ndash; {{ lang('ACP_NEWTOPIC_SETTINGS') }}</h1>
+{% include '@salvocortesiano_newtopic/acp_newtopic_badges.html' %}
+
+<p>{{ lang('ACP_NEWTOPIC_SETTINGS_EXPLAIN') }}</p>
+
+{% if S_ERROR %}
+<div class="errorbox">
+	<h3>{{ lang('WARNING') }}</h3>
+	<p>{{ ERROR_MSG }}</p>
+</div>
+{% endif %}
+
+<form id="acp_newtopic" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend>{{ lang('ACP_NEWTOPIC_LEGEND_GENERAL') }}</legend>
+		<dl>
+			<dt><label for="newtopic_enable">{{ lang('ACP_NEWTOPIC_ENABLE') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_ENABLE_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_enable" id="newtopic_enable" value="1"{% if NEWTOPIC_ENABLE %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="newtopic_enable" value="0"{% if not NEWTOPIC_ENABLE %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_guests">{{ lang('ACP_NEWTOPIC_GUESTS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_GUESTS_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_guests" id="newtopic_guests" value="1"{% if NEWTOPIC_GUESTS %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="newtopic_guests" value="0"{% if not NEWTOPIC_GUESTS %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_NEWTOPIC_LEGEND_LIST') }}</legend>
+		<dl>
+			<dt><label for="newtopic_hide_parents">{{ lang('ACP_NEWTOPIC_HIDE_PARENTS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_HIDE_PARENTS_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_hide_parents" id="newtopic_hide_parents" value="0"{% if not NEWTOPIC_HIDE_PARENTS %} checked="checked"{% endif %}> {{ lang('ACP_NEWTOPIC_PARENTS_ALLOW') }}</label>
+				<label><input type="radio" class="radio" name="newtopic_hide_parents" value="1"{% if NEWTOPIC_HIDE_PARENTS %} checked="checked"{% endif %}> {{ lang('ACP_NEWTOPIC_PARENTS_BLOCK') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_show_denied">{{ lang('ACP_NEWTOPIC_SHOW_DENIED') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_SHOW_DENIED_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_show_denied" id="newtopic_show_denied" value="1"{% if NEWTOPIC_SHOW_DENIED %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="newtopic_show_denied" value="0"{% if not NEWTOPIC_SHOW_DENIED %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_excluded">{{ lang('ACP_NEWTOPIC_EXCLUDED') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_EXCLUDED_EXPLAIN') }}</span></dt>
+			<dd><select name="newtopic_excluded[]" id="newtopic_excluded" multiple="multiple" size="12" style="min-width: 320px;">{{ S_EXCLUDED_OPTIONS }}</select></dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_search">{{ lang('ACP_NEWTOPIC_SEARCH') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_SEARCH_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_search" id="newtopic_search" value="1"{% if NEWTOPIC_SEARCH %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="newtopic_search" value="0"{% if not NEWTOPIC_SEARCH %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_current">{{ lang('ACP_NEWTOPIC_CURRENT') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_CURRENT_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_current" id="newtopic_current" value="1"{% if NEWTOPIC_CURRENT %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="newtopic_current" value="0"{% if not NEWTOPIC_CURRENT %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_recent">{{ lang('ACP_NEWTOPIC_RECENT') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_RECENT_EXPLAIN') }}</span></dt>
+			<dd><input type="number" name="newtopic_recent" id="newtopic_recent" min="0" max="10" value="{{ NEWTOPIC_RECENT }}" style="width: 60px;"></dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_NEWTOPIC_LEGEND_LOOK') }}</legend>
+		<dl>
+			<dt><label for="newtopic_mobile_mode">{{ lang('ACP_NEWTOPIC_MOBILE') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_MOBILE_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_mobile_mode" id="newtopic_mobile_mode" value="bar"{% if NEWTOPIC_MOBILE_MODE == 'bar' %} checked="checked"{% endif %}> {{ lang('ACP_NEWTOPIC_MOBILE_BAR') }}</label><br>
+				<label><input type="radio" class="radio" name="newtopic_mobile_mode" value="fab"{% if NEWTOPIC_MOBILE_MODE == 'fab' %} checked="checked"{% endif %}> {{ lang('ACP_NEWTOPIC_MOBILE_FAB') }}</label><br>
+				<label><input type="radio" class="radio" name="newtopic_mobile_mode" value="off"{% if NEWTOPIC_MOBILE_MODE == 'off' %} checked="checked"{% endif %}> {{ lang('ACP_NEWTOPIC_MOBILE_OFF') }}</label><br>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_fab_side">{{ lang('ACP_NEWTOPIC_FAB_SIDE') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_FAB_SIDE_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="newtopic_fab_side" id="newtopic_fab_side" value="right"{% if NEWTOPIC_FAB_SIDE == 'right' %} checked="checked"{% endif %}> {{ lang('ACP_NEWTOPIC_FAB_RIGHT') }}</label><br>
+				<label><input type="radio" class="radio" name="newtopic_fab_side" value="left"{% if NEWTOPIC_FAB_SIDE == 'left' %} checked="checked"{% endif %}> {{ lang('ACP_NEWTOPIC_FAB_LEFT') }}</label><br>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="newtopic_accent">{{ lang('ACP_NEWTOPIC_ACCENT') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_ACCENT_EXPLAIN') }}</span></dt>
+			<dd><input type="color" name="newtopic_accent" id="newtopic_accent" value="{{ NEWTOPIC_ACCENT }}" style="width: 60px; height: 32px; padding: 2px;"> <code>{{ NEWTOPIC_ACCENT }}</code></dd>
+		</dl>
+	</fieldset>
+
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}">&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}">
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+
+{% include '@salvocortesiano_newtopic/acp_newtopic_footer.html' %}
+{% include 'overall_footer.html' %}

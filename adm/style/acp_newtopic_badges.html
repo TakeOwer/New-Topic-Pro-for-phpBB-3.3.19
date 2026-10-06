@@ -1,0 +1,25 @@
+<style>
+.nt-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 14px; }
+.nt-badge { display: inline-flex; font: 600 11px/1 Verdana, "DejaVu Sans", sans-serif; border-radius: 4px; overflow: hidden; box-shadow: inset 0 -1px 0 rgba(0,0,0,.15); cursor: default; }
+.nt-badge span { padding: 5px 7px; color: #fff; }
+.nt-badge-label { background: #555; }
+.nt-badge-blue { background: #1f6fb5; }
+.nt-badge-green { background: #3a9b3a; }
+.nt-badge-red { background: #c9302c; }
+.nt-badge-orange { background: #e08a1e; }
+.nt-badge-grey { background: #8a8f94; }
+.nt-db-warning { margin: 0 0 14px; padding: 10px 12px; border: 1px solid #e3a6a4; border-radius: 4px; background: #fbeceb; color: #8a1f1b; }
+</style>
+<div class="nt-badges">
+	{% if S_NT_DB_OK %}
+	<span class="nt-badge" title="{{ lang('ACP_NEWTOPIC_BADGE_OK')|e('html') }}"><span class="nt-badge-label">{{ lang('ACP_NEWTOPIC_BADGE_VERSION') }}</span><span class="nt-badge-blue">{{ NT_BADGE_VERSION }}</span></span>
+	{% else %}
+	<span class="nt-badge" title="{{ lang('ACP_NEWTOPIC_BADGE_DB_BAD', NT_BADGE_VERSION, NT_BADGE_DB)|e('html') }}"><span class="nt-badge-label">{{ lang('ACP_NEWTOPIC_BADGE_VERSION') }}</span><span class="nt-badge-orange">{{ NT_BADGE_VERSION }}</span></span>
+	{% endif %}
+	<span class="nt-badge" title="{{ lang(S_NT_PHPBB_OK ? 'ACP_NEWTOPIC_BADGE_OK' : 'ACP_NEWTOPIC_BADGE_BAD')|e('html') }}"><span class="nt-badge-label">{{ lang('ACP_NEWTOPIC_BADGE_PHPBB') }}</span><span class="{{ S_NT_PHPBB_OK ? 'nt-badge-green' : 'nt-badge-red' }}">{{ NT_BADGE_PHPBB }}</span></span>
+	<span class="nt-badge" title="{{ lang(S_NT_PHP_OK ? 'ACP_NEWTOPIC_BADGE_OK' : 'ACP_NEWTOPIC_BADGE_BAD')|e('html') }}"><span class="nt-badge-label">{{ lang('ACP_NEWTOPIC_BADGE_PHP') }}</span><span class="{{ S_NT_PHP_OK ? 'nt-badge-green' : 'nt-badge-red' }}">{{ NT_BADGE_PHP }}</span></span>
+	<span class="nt-badge"><span class="nt-badge-label">{{ lang('ACP_NEWTOPIC_BADGE_LICENSE') }}</span><span class="nt-badge-grey">{{ NT_BADGE_LICENSE }}</span></span>
+</div>
+{% if not S_NT_DB_OK %}
+<div class="nt-db-warning">{{ lang('ACP_NEWTOPIC_DB_MISMATCH', NT_BADGE_VERSION, NT_BADGE_DB) }}</div>
+{% endif %}
