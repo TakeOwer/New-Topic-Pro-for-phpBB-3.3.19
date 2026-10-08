@@ -32,6 +32,23 @@
 	</fieldset>
 
 	<fieldset>
+		<legend>{{ lang('ACP_NEWTOPIC_LEGEND_POSITION') }}</legend>
+		<dl>
+			<dt><label for="newtopic_position">{{ lang('ACP_NEWTOPIC_POSITION') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_POSITION_EXPLAIN') }}</span></dt>
+			<dd>
+				<select name="newtopic_position" id="newtopic_position">
+					{% for pos in loops.positions %}
+					<option value="{{ pos.VALUE }}"{% if pos.S_SELECTED %} selected="selected"{% endif %}>{{ pos.NAME }}{% if not pos.S_SUPPORTED %} {{ lang('ACP_NEWTOPIC_POS_UNSUPPORTED') }}{% endif %}</option>
+					{% endfor %}
+				</select>
+				{% if not S_NT_POSITION_SUPPORTED %}
+				<p class="error" style="margin-top: 6px;">{{ lang('ACP_NEWTOPIC_POSITION_WARN') }}</p>
+				{% endif %}
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
 		<legend>{{ lang('ACP_NEWTOPIC_LEGEND_LIST') }}</legend>
 		<dl>
 			<dt><label for="newtopic_hide_parents">{{ lang('ACP_NEWTOPIC_HIDE_PARENTS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_NEWTOPIC_HIDE_PARENTS_EXPLAIN') }}</span></dt>

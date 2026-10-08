@@ -1,6 +1,6 @@
 # New Topic Pro – Guida all'uso
 
-**Estensione:** `salvocortesiano/newtopic` · **Versione:** 2.0.1 · **Requisiti:** phpBB 3.3.x, PHP 7.4 o superiore (testata con PHP 8.2/8.3) · **Licenza:** GPL-2.0-only
+**Estensione:** `salvocortesiano/newtopic` · **Versione:** 2.0.2 · **Requisiti:** phpBB 3.3.x, PHP 7.4 o superiore (testata con PHP 8.2/8.3) · **Licenza:** GPL-2.0-only
 
 Sviluppata da Salvo Cortesiano – supporto: info@netshadows.de
 Basata su «New Topic» di dmzx (`dmzx/newtopic` 1.0.3), riscritta da zero.
@@ -9,7 +9,7 @@ Basata su «New Topic» di dmzx (`dmzx/newtopic` 1.0.3), riscritta da zero.
 
 ## 1. A cosa serve
 
-Mette in ogni pagina del forum un pulsante **«Nuovo argomento»** nella barra dei percorsi (breadcrumb). Il pulsante apre un pannello con l'elenco dei forum: scegliendone uno si arriva direttamente alla pagina di scrittura del nuovo argomento in quel forum.
+Mette in ogni pagina del forum un pulsante **«Nuovo argomento»**, nella posizione che scegli in ACP: barra dei percorsi (predefinita), barra di navigazione, menu «Collegamenti rapidi», sopra il contenuto della pagina oppure come pulsante fluttuante. Il pulsante apre un pannello con l'elenco dei forum: scegliendone uno si arriva direttamente alla pagina di scrittura del nuovo argomento in quel forum.
 
 L'elenco mostra **solo i forum in cui l'utente può davvero aprire un argomento**. Tutto il resto o non compare o compare come intestazione non cliccabile.
 
@@ -30,13 +30,15 @@ L'elenco mostra **solo i forum in cui l'utente può davvero aprire un argomento*
 4. Svuota la cache (ACP › Generale › Svuota la cache).
 5. Apri ACP › Estensioni › New Topic Pro › **Check-up** ed esegui il controllo.
 
-L'attivazione esegue le migrazioni `v2_0_0` e `v2_0_1`: la prima crea le impostazioni e il modulo ACP. La seconda aggiorna solo il numero di versione. Non viene creata nessuna tabella.
+L'attivazione esegue le migrazioni `v2_0_0`, `v2_0_1` e `v2_0_2`: la prima crea le impostazioni e il modulo ACP, la seconda aggiorna solo il numero di versione, la terza aggiunge l'impostazione della posizione (lasciando il pulsante nella barra dei percorsi). Non viene creata nessuna tabella.
 
 ## 4. Il pulsante e il pannello (lato utente)
 
 ### Su computer
-- Il pulsante blu **«+ Nuovo argomento»** sta a destra nella barra dei percorsi.
-- Il pannello si apre sotto il pulsante (o sopra, se sotto non c'è spazio) e il cursore va subito nel campo di ricerca.
+- Il pulsante blu **«+ Nuovo argomento»** sta nella posizione scelta in ACP (vedi [§ 6](#6-impostazioni-acp)).
+- Il pannello si apre sotto il pulsante (o sopra, se sotto non c'è spazio) e il cursore va subito nel campo di ricerca. Se il pulsante sta nella metà sinistra della pagina il pannello si apre verso destra, altrimenti verso sinistra.
+- Dal menu **«Collegamenti rapidi»** il menu di phpBB si chiude e il pannello si apre al centro della pagina, con lo sfondo oscurato.
+- Con **«Solo pulsante fluttuante»** il pulsante rotondo «+» sta in basso anche su computer e il pannello si apre sopra di esso.
 - **Tastiera:**
   - `↓` e `↑` scorrono i forum;
   - `Invio` apre il forum selezionato; dal campo di ricerca apre il primo risultato;
@@ -46,7 +48,7 @@ L'attivazione esegue le migrazioni `v2_0_0` e `v2_0_1`: la prima crea le imposta
 - Il pannello si chiude cliccando fuori.
 
 ### Su smartphone (sotto i 700 px di larghezza)
-- In base all'impostazione ACP compare un **pulsante compatto «+»** nella barra oppure un **pulsante fluttuante** in basso.
+- In base all'impostazione ACP compare un **pulsante compatto «+»** nella posizione scelta oppure un **pulsante fluttuante** in basso. Nel menu «Collegamenti rapidi» la voce resta «Nuovo argomento» per intero.
 - L'elenco si apre come **pannello dal basso** a tutta larghezza, con lo sfondo oscurato. Si chiude con la ✕ o toccando lo sfondo.
 - Le voci sono più alte, per toccarle facilmente; il campo di ricerca usa caratteri da 16 px, così iOS non ingrandisce la pagina.
 
@@ -89,6 +91,22 @@ ACP › Estensioni › New Topic Pro › **Impostazioni**
 - **Mostra il pulsante:** spegne o accende il pulsante su tutto il forum senza disinstallare.
 - **Mostralo anche agli ospiti:** compare solo se gli ospiti hanno `f_post` in almeno un forum.
 
+### Posizione
+- **Posizione del pulsante:** dove compare il pulsante in tutte le pagine. Il pannello è lo stesso in ogni posizione.
+
+| Posizione | Dove si trova | Evento template usato |
+|---|---|---|
+| Barra dei percorsi (a destra) — *predefinita* | A destra della riga Indice › Forum › … | `overall_header_breadcrumbs_after` |
+| Barra di navigazione (accanto a FAQ) | Nella riga in alto, dopo «FAQ» | `overall_header_navigation_append` |
+| Barra di navigazione (accanto al profilo) | Nella riga in alto, a destra, prima di notifiche, messaggi privati e nome utente | `navbar_header_user_profile_append` (ospiti: `navbar_header_logged_out_content`) |
+| Menu «Collegamenti rapidi» | Come ultima voce del menu a tendina | `navbar_header_quick_links_after` |
+| Sopra il contenuto della pagina | In una riga a sé, allineato a destra, sotto le barre | `overall_header_page_body_before` |
+| Solo pulsante fluttuante | Pulsante rotondo «+» in basso, su tutti gli schermi | `overall_header_page_body_before` |
+
+  Nel menu, accanto alle posizioni che lo **stile predefinito** non supporta compare «(non supportata dallo stile predefinito)»; se la posizione salvata è una di queste, sotto il menu compare un avviso rosso. Per gli altri stili attivi lo dice il Check-up.
+
+  Nella barra di navigazione il pulsante è marcato `data-skip-responsive`: sugli schermi stretti phpBB non lo sposta dentro il menu a tendina e non lo duplica.
+
 ### Elenco dei forum
 - **Forum che contengono sottoforum:** *Selezionabili* (predefinito) o *Non selezionabili*.
 - **Mostra i forum non disponibili:** in grigio con il motivo oppure nascosti (predefinito).
@@ -98,7 +116,7 @@ ACP › Estensioni › New Topic Pro › **Impostazioni**
 - **Forum usati di recente:** da 0 a 10 (0 disattiva la sezione). Predefinito: 5.
 
 ### Aspetto e smartphone
-- **Su smartphone:** *Pulsante compatto nella barra* (predefinito), *Pulsante fluttuante in basso* oppure *Nascondi*.
+- **Su smartphone:** *Pulsante compatto nella barra* (predefinito), *Pulsante fluttuante in basso* oppure *Nascondi*. Con la posizione «Solo pulsante fluttuante» conta solo *Nascondi*.
 - **Lato del pulsante fluttuante:** destra o sinistra. Scegli il lato libero se dall'altro c'è la chat o il «torna su».
 - **Colore principale:** colore del pulsante e delle evidenziazioni (formato `#rrggbb`). Predefinito `#105289`.
 
@@ -127,7 +145,7 @@ ACP › Estensioni › New Topic Pro › **Check-up** › «Esegui il check-up»
 | Vecchia estensione dmzx/newtopic | errore se è ancora attiva (doppio menu) |
 | File dell'estensione | errore se manca CSS, JS, uno dei template o la lingua inglese |
 | Lingue | avviso per ogni lingua installata sul forum senza traduzione (quegli utenti vedono l'inglese) |
-| Stile «…» | per **ogni stile attivo**, controlla, risalendo anche agli stili genitori, che esistano gli eventi template `overall_header_breadcrumbs_after` e `overall_header_head_append`; errore se ne manca uno |
+| Stile «…» | per **ogni stile attivo** controlla che esistano gli eventi template della **posizione scelta** (più `overall_header_head_append`, per il CSS); errore se ne manca uno. Elenca anche **tutte le posizioni disponibili con quello stile**, così sai subito cosa scegliere. Uno stile figlio che sostituisce un template del genitore (per esempio `navbar_header.html`) viene valutato con il suo template, come fa phpBB |
 | Struttura del forum | numero di forum, categorie e collegamenti |
 | Forum esclusi | avviso se tra gli esclusi ci sono forum cancellati (risalva le impostazioni per ripulire) |
 | Colore principale | avviso se non è un colore valido |
@@ -164,10 +182,12 @@ salvocortesiano/newtopic/
 ├── config/services.yml
 ├── core/forum_list.php                           costruisce l'elenco e applica le regole di posting.php
 ├── core/checkup.php                              controlli della scheda Check-up
+├── core/positions.php                            posizioni del pulsante e relativi eventi template
 ├── event/listener.php                            prepara il pulsante in ogni pagina (core.page_header)
 ├── language/it, language/en                      common.php, acp_newtopic.php, info_acp_newtopic.php
-├── migrations/v2_0_0.php, v2_0_1.php
-├── styles/all/template/event/                    overall_header_breadcrumbs_after.html, overall_header_head_append.html
+├── migrations/v2_0_0.php, v2_0_1.php, v2_0_2.php
+├── styles/all/template/newtopic_widget.html       pulsante, pannello e pulsante fluttuante (markup unico)
+├── styles/all/template/event/                    un file per posizione, più overall_header_head_append.html per il CSS
 ├── styles/all/template/js/newtopic.js            pannello, ricerca, tastiera (nessuna dipendenza)
 ├── styles/all/theme/newtopic.css
 └── docs/GUIDA.md                                 questa guida
@@ -184,7 +204,8 @@ salvocortesiano/newtopic/
   - il focus resta dentro il pannello e il focus da tastiera è sempre visibile;
   - con «riduci movimento» attivo, le animazioni vengono disattivate.
 - **Testi:** tutti nei file di lingua, compresi quelli usati dallo script, che li riceve tramite attributi `data-`.
-- **Configurazione salvata:** chiavi `newtopic_*` nella tabella config; i forum esclusi in `config_text` (`newtopic_excluded`, JSON).
+- **Posizioni:** definite una sola volta in `core/positions.php` (chiave della posizione ed eventi template richiesti), usate da listener, ACP e Check-up. Ogni file evento mostra il pulsante solo se la posizione salvata è la sua, quindi in pagina c'è sempre un solo pulsante.
+- **Configurazione salvata:** chiavi `newtopic_*` nella tabella config (posizione in `newtopic_position`); i forum esclusi in `config_text` (`newtopic_excluded`, JSON).
 
 ## 11. Aggiornamenti futuri
 
@@ -196,6 +217,7 @@ Per aggiornare: carica i file sopra i precedenti, poi disattiva e riattiva l'est
 
 | Versione | Modifiche |
 |---|---|
+| 2.0.2 | Nuova impostazione **Posizione del pulsante**: barra dei percorsi, barra di navigazione (accanto a FAQ o al profilo), menu «Collegamenti rapidi», sopra il contenuto della pagina, solo pulsante fluttuante. Il Check-up indica le posizioni disponibili per ogni stile; l'ACP segnala quelle non supportate dallo stile predefinito. Il pannello si apre verso il lato in cui c'è spazio. Corretto il posizionamento del pannello sopra il pulsante fluttuante. |
 | 2.0.1 | Corretti i nomi dei forum invisibili finché non ci si passava sopra col mouse: lo stile del forum colorava i link con `a:link`/`a:visited`. Indicatore del forum corrente ridisegnato come barra dritta. |
 | 2.0.0 | Riscrittura completa dell'estensione di dmzx: pannello responsive, regole di posting.php, ACP con Impostazioni e Check-up. |
 
@@ -203,7 +225,8 @@ Per aggiornare: carica i file sopra i precedenti, poi disattiva e riattiva l'est
 
 | Sintomo | Cosa fare |
 |---|---|
-| Il pulsante non compare | Esegui il Check-up. Le cause tipiche sono: pulsante spento, utente senza forum in cui scrivere, stile senza l'evento `overall_header_breadcrumbs_after`, cache non svuotata. |
+| Il pulsante non compare | Esegui il Check-up. Le cause tipiche sono: pulsante spento, utente senza forum in cui scrivere, stile senza l'evento della posizione scelta, cache non svuotata. Con la posizione «Menu Collegamenti rapidi» il pulsante si vede solo aprendo il menu. |
+| Una posizione è «non supportata» dallo stile | Lo stile ha modificato il template che contiene quell'evento. Scegli una delle posizioni che il Check-up elenca come disponibili, oppure aggiungi l'evento al template dello stile. |
 | Compare due volte | È ancora attiva `dmzx/newtopic`. Disattivala ed elimina i suoi dati. |
 | I nomi dei forum non si vedono | Svuota la cache e ricarica la pagina con Ctrl+F5: dalla 2.0.1 il problema è corretto, ma il browser potrebbe usare ancora il CSS vecchio. |
 | Il pulsante non ha grafica | Allo stile manca l'evento `overall_header_head_append`, oppure la cache non è stata svuotata. |

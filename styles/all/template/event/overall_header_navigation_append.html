@@ -1,0 +1,5 @@
+{% if S_NEWTOPIC_SHOW and NEWTOPIC_POSITION == 'navbar_left' %}
+<li class="nt-host nt-pos-{{ NEWTOPIC_POSITION }} nt-mobile-{{ NEWTOPIC_MOBILE }}" data-nt-host data-user="{{ NEWTOPIC_USER_KEY }}" data-recent="{{ NEWTOPIC_RECENT }}" style="--nt-accent: {{ NEWTOPIC_ACCENT }};" data-skip-responsive="true">
+{% include '@salvocortesiano_newtopic/newtopic_widget.html' %}
+</li>
+{% endif %}

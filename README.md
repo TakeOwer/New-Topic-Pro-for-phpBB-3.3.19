@@ -1,25 +1,15 @@
 # New Topic Pro for phpBB
 
-![Version](https://img.shields.io/badge/version-2.0.1-1f6fb5)
+![Version](https://img.shields.io/badge/version-2.0.2-1f6fb5)
 ![phpBB](https://img.shields.io/badge/phpBB-3.3.x-3a9b3a)
 ![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%207.4-3a9b3a)
 ![License](https://img.shields.io/badge/license-GPL--2.0--only-8a8f94)
 
-**Extension:** `salvocortesiano/newtopic` · **Version:** 2.0.1 · **Requirements:** phpBB 3.3.x, PHP 7.4 or newer (tested with PHP 8.2/8.3) · **License:** GPL-2.0-only
+**Extension:** `salvocortesiano/newtopic` · **Version:** 2.0.2 · **Requirements:** phpBB 3.3.x, PHP 7.4 or newer (tested with PHP 8.2/8.3) · **License:** GPL-2.0-only
 
 Developed by Salvo Cortesiano – support: info@netshadows.de
 Based on “New Topic” by dmzx (`dmzx/newtopic` 1.0.3), rewritten from scratch.
 
----
-<img width="477" height="663" alt="Screenshot 2026-10-06 113311" src="https://github.com/user-attachments/assets/6b328c97-0244-4bdb-bbc9-0d1009bb078d" />
----
-<img width="470" height="681" alt="Screenshot 2026-10-06 113322" src="https://github.com/user-attachments/assets/efa13ac4-32ab-4718-af32-10b173035496" />
----
-<img width="2279" height="957" alt="Screenshot 2026-10-05 124432" src="https://github.com/user-attachments/assets/eb635f61-a77c-483e-b1dc-9d3185c08aa7" />
----
-<img width="2287" height="821" alt="Screenshot 2026-10-05 124445" src="https://github.com/user-attachments/assets/36d7771a-cfdb-471a-a404-8830de75e5a2" />
----
-<img width="1906" height="1251" alt="Screenshot 2026-10-05 124453" src="https://github.com/user-attachments/assets/72727ce8-ca93-4446-97a1-94ddc1699011" />
 ---
 
 ## Table of contents
@@ -41,7 +31,7 @@ Based on “New Topic” by dmzx (`dmzx/newtopic` 1.0.3), rewritten from scratch
 
 ## 1. What it does
 
-It adds a **“New topic”** button to the breadcrumb bar of every page of the board. The button opens a panel listing the forums: picking one takes the user straight to the posting page for a new topic in that forum.
+It adds a **“New topic”** button to every page of the board, in the position you choose in the ACP: breadcrumb bar (default), navigation bar, “Quick links” menu, above the page content, or as a floating button. The button opens a panel listing the forums: picking one takes the user straight to the posting page for a new topic in that forum.
 
 The list shows **only the forums where the user can actually start a topic**. Everything else is either hidden or shown as a non-clickable header.
 
@@ -62,13 +52,15 @@ The list shows **only the forums where the user can actually start a topic**. Ev
 4. Purge the cache (ACP › General › Purge the cache).
 5. Open ACP › Extensions › New Topic Pro › **Check-up** and run it.
 
-Enabling the extension runs the `v2_0_0` and `v2_0_1` migrations. The first one creates the settings and the ACP module; the second one only updates the version number. No database tables are created.
+Enabling the extension runs the `v2_0_0`, `v2_0_1` and `v2_0_2` migrations: the first creates the settings and the ACP module, the second only updates the version number, the third adds the position setting (keeping the button in the breadcrumb bar). No database tables are created.
 
 ## 4. The button and the panel (user side)
 
 ### On desktop
-- The **“+ New topic”** button sits on the right of the breadcrumb bar.
-- The panel opens below the button (or above it, if there is no room below) and the cursor goes straight into the search field.
+- The **“+ New topic”** button sits in the position chosen in the ACP (see [§ 6](#6-acp-settings)).
+- The panel opens below the button (or above it, if there is no room below) and the cursor goes straight into the search field. If the button is on the left half of the page the panel opens to the right, otherwise to the left.
+- From the **“Quick links”** menu, phpBB's menu closes and the panel opens in the middle of the page over a dimmed background.
+- With **“Floating button only”** the round “+” button sits at the bottom on desktop too, and the panel opens above it.
 - **Keyboard:**
   - `↓` and `↑` move through the forums;
   - `Enter` opens the selected forum; from the search field it opens the first result;
@@ -78,7 +70,7 @@ Enabling the extension runs the `v2_0_0` and `v2_0_1` migrations. The first one 
 - Clicking outside the panel closes it.
 
 ### On phones (below 700 px wide)
-- Depending on the ACP setting, a **compact “+” button** appears in the bar, or a **floating button** at the bottom of the screen.
+- Depending on the ACP setting, a **compact “+” button** appears in the chosen position, or a **floating button** at the bottom of the screen. In the “Quick links” menu the entry keeps its full “New topic” label.
 - The list opens as a full-width **bottom sheet** over a dimmed background. It closes with the ✕ or by tapping the background.
 - Entries are taller so they are easy to tap; the search field uses a 16 px font so iOS does not zoom the page.
 
@@ -121,6 +113,22 @@ ACP › Extensions › New Topic Pro › **Settings**
 - **Show the button:** turns the button on or off across the whole board without uninstalling.
 - **Show it to guests too:** it only appears if guests have `f_post` in at least one forum.
 
+### Position
+- **Button position:** where the button appears on every page. The panel is the same in every position.
+
+| Position | Where it is | Template event used |
+|---|---|---|
+| Breadcrumb bar (on the right) — *default* | Right of the Index › Forum › … row | `overall_header_breadcrumbs_after` |
+| Navigation bar (next to FAQ) | Top row, after “FAQ” | `overall_header_navigation_append` |
+| Navigation bar (next to the user profile) | Top row, on the right, before notifications, private messages and username | `navbar_header_user_profile_append` (guests: `navbar_header_logged_out_content`) |
+| “Quick links” menu | As the last entry of the dropdown | `navbar_header_quick_links_after` |
+| Above the page content | On its own row, right-aligned, below the bars | `overall_header_page_body_before` |
+| Floating button only | Round “+” button at the bottom, on every screen size | `overall_header_page_body_before` |
+
+  In the list, positions the **default style** does not support are marked “(not supported by the default style)”; if the saved position is one of them, a red warning appears below the list. The Check-up reports the same for every other active style.
+
+  In the navigation bar the button carries `data-skip-responsive`: on narrow screens phpBB does not move it into its dropdown menu and does not duplicate it.
+
 ### Forum list
 - **Forums that contain subforums:** *Selectable* (default) or *Not selectable*.
 - **Show unavailable forums:** in grey with the reason, or hidden (default).
@@ -130,7 +138,7 @@ ACP › Extensions › New Topic Pro › **Settings**
 - **Recently used forums:** from 0 to 10 (0 turns the section off). Default: 5.
 
 ### Appearance and phones
-- **On phones:** *Compact button in the bar* (default), *Floating button at the bottom* or *Hide*.
+- **On phones:** *Compact button in the bar* (default), *Floating button at the bottom* or *Hide*. With the “Floating button only” position only *Hide* applies.
 - **Floating button side:** right or left. Pick the free side if the other already has a chat or a “back to top” button.
 - **Accent colour:** colour of the button and of the highlights (`#rrggbb` format). Default `#105289`.
 
@@ -159,7 +167,7 @@ ACP › Extensions › New Topic Pro › **Check-up** › “Run the check-up”
 | Old dmzx/newtopic extension | error if it is still enabled (duplicate menu) |
 | Extension files | error if the CSS, the JS, one of the templates or the English language pack is missing |
 | Languages | warning for each language installed on the board without a translation (those users see English) |
-| Style “…” | for **every active style**, also walking up to parent styles, checks that the `overall_header_breadcrumbs_after` and `overall_header_head_append` template events exist; error if one is missing |
+| Style “…” | for **every active style**, checks that the template events of the **chosen position** exist (plus `overall_header_head_append`, for the CSS); error if one is missing. It also lists **every position available with that style**, so you know right away what to pick. A child style that overrides a parent template (e.g. `navbar_header.html`) is checked against its own template, as phpBB does |
 | Board structure | number of forums, categories and links |
 | Excluded forums | warning if deleted forums are still in the excluded list (save the settings again to clean it) |
 | Accent colour | warning if it is not a valid colour |
@@ -196,10 +204,12 @@ salvocortesiano/newtopic/
 ├── config/services.yml
 ├── core/forum_list.php                           builds the list and applies the posting.php rules
 ├── core/checkup.php                              checks run by the Check-up tab
+├── core/positions.php                            button positions and their template events
 ├── event/listener.php                            prepares the button on every page (core.page_header)
 ├── language/it, language/en                      common.php, acp_newtopic.php, info_acp_newtopic.php
-├── migrations/v2_0_0.php, v2_0_1.php
-├── styles/all/template/event/                    overall_header_breadcrumbs_after.html, overall_header_head_append.html
+├── migrations/v2_0_0.php, v2_0_1.php, v2_0_2.php
+├── styles/all/template/newtopic_widget.html       button, panel and floating button (single markup)
+├── styles/all/template/event/                    one file per position, plus overall_header_head_append.html for the CSS
 ├── styles/all/template/js/newtopic.js            panel, search, keyboard (no dependencies)
 ├── styles/all/theme/newtopic.css
 └── docs/GUIDA.md                                 user guide (Italian)
@@ -216,7 +226,8 @@ salvocortesiano/newtopic/
   - focus stays inside the panel and keyboard focus is always visible;
   - when “reduce motion” is on, animations are disabled.
 - **Text:** everything lives in the language files (Italian and English included), including the strings used by the script, which receives them through `data-` attributes.
-- **Stored configuration:** `newtopic_*` keys in the config table; excluded forums in `config_text` (`newtopic_excluded`, JSON).
+- **Positions:** defined once in `core/positions.php` (position key and required template events), used by the listener, the ACP and the Check-up. Each event file shows the button only when the saved position is its own, so a page always has exactly one button.
+- **Stored configuration:** `newtopic_*` keys in the config table (position in `newtopic_position`); excluded forums in `config_text` (`newtopic_excluded`, JSON).
 
 ## 11. Updating and uninstalling
 
@@ -230,6 +241,7 @@ Every new version must update `composer.json` and add a new migration that sets 
 
 | Version | Changes |
 |---|---|
+| 2.0.2 | New **Button position** setting: breadcrumb bar, navigation bar (next to FAQ or to the user profile), “Quick links” menu, above the page content, floating button only. The Check-up lists the positions available for each style; the ACP flags those the default style does not support. The panel opens towards the side with room. Fixed the panel placement above the floating button. |
 | 2.0.1 | Fixed forum names being invisible until hovered: the board style coloured links with `a:link`/`a:visited`. Current-forum marker redrawn as a straight bar. |
 | 2.0.0 | Complete rewrite of dmzx's extension: responsive panel, posting.php rules, ACP with Settings and Check-up. |
 
@@ -237,7 +249,8 @@ Every new version must update `composer.json` and add a new migration that sets 
 
 | Symptom | What to do |
 |---|---|
-| The button does not appear | Run the Check-up. Typical causes: button turned off, user with no forum to post in, style without the `overall_header_breadcrumbs_after` event, cache not purged. |
+| The button does not appear | Run the Check-up. Typical causes: button turned off, user with no forum to post in, style without the event of the chosen position, cache not purged. With the “Quick links” position the button only shows when the menu is open. |
+| A position is “not supported” by a style | The style changed the template that holds that event. Pick one of the positions the Check-up lists as available, or add the event to the style's template. |
 | It appears twice | `dmzx/newtopic` is still enabled. Disable it and delete its data. |
 | Forum names are not visible | Purge the cache and reload the page with Ctrl+F5: this was fixed in 2.0.1, but the browser may still be using the old CSS. |
 | The button has no styling | The style lacks the `overall_header_head_append` event, or the cache was not purged. |

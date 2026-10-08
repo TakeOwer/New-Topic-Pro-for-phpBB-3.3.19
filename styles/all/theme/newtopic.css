@@ -99,6 +99,52 @@ ul.linklist > li.nt-host {
 	transform: rotate(180deg);
 }
 
+/* ---------- positions ---------- */
+
+/* Above the page content: a right-aligned row of its own. */
+.nt-host.nt-pos-page_top {
+	display: flex;
+	justify-content: flex-end;
+	margin: 8px 0 2px;
+}
+
+/* Floating button only: the wrapper stays empty once the script has run. */
+.nt-host.nt-pos-floating {
+	display: none;
+}
+
+/* Inside the "Quick links" dropdown: look like the other menu entries. */
+.dropdown-contents > li.nt-host {
+	list-style: none;
+}
+
+.nt-trigger.nt-trigger--menu {
+	display: flex;
+	justify-content: flex-start;
+	gap: 5px;
+	width: 100%;
+	height: auto;
+	padding: 5px;
+	border-radius: 0;
+	background: transparent;
+	color: var(--nt-accent);
+	box-shadow: none;
+	font-size: inherit;
+	font-weight: normal;
+	line-height: inherit;
+	text-align: left;
+}
+
+.nt-trigger.nt-trigger--menu:hover {
+	filter: none;
+	text-decoration: underline;
+}
+
+.nt-trigger--menu .nt-ico {
+	width: 14px;
+	height: 14px;
+}
+
 /* ---------- panel ---------- */
 
 .nt-panel {
@@ -649,25 +695,40 @@ html.nt-lock body {
 /* ---------- breakpoints ---------- */
 
 @media (max-width: 699px) {
-	.nt-mobile-bar .nt-trigger {
+	.nt-mobile-bar:not(.nt-pos-quicklinks) .nt-trigger {
 		width: 30px;
 		height: 28px;
 		padding: 0;
 		justify-content: center;
 	}
 
-	.nt-mobile-bar .nt-trigger-label,
+	.nt-mobile-bar:not(.nt-pos-quicklinks) .nt-trigger-label,
 	.nt-mobile-bar .nt-caret {
 		display: none;
 	}
 
-	ul.linklist > li.nt-mobile-fab,
-	ul.linklist > li.nt-mobile-off {
+	.nt-host.nt-host.nt-mobile-fab,
+	.nt-host.nt-host.nt-mobile-off {
 		display: none;
 	}
 
 	.nt-fab {
 		display: inline-flex;
+	}
+
+	.nt-fab.nt-mobile-off {
+		display: none;
+	}
+}
+
+/* "Floating button only": the floating button is shown on every screen size. */
+.nt-fab.nt-fab--always {
+	display: inline-flex;
+}
+
+@media (max-width: 699px) {
+	.nt-fab.nt-fab--always.nt-mobile-off {
+		display: none;
 	}
 }
 

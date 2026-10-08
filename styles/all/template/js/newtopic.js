@@ -53,12 +53,14 @@
 			return;
 		}
 
-		var trigger = host.querySelector('[data-nt-trigger]');
 		var panel = host.querySelector('[data-nt-panel]');
 		var fab = host.querySelector('[data-nt-fab]');
+		// "Floating button only" has no button in the page: the floating one is the trigger.
+		var trigger = host.querySelector('[data-nt-trigger]') || fab;
 		if (!trigger || !panel) {
 			return;
 		}
+		var hasBarTrigger = trigger !== fab;
 
 		// Live in <body> so no navbar overflow can clip the panel.
 		var backdrop = document.createElement('div');
@@ -251,6 +253,33 @@
 
 		/* ---------- placement ---------- */
 
+		// offsetParent is null for position:fixed elements (the floating
+		// button), so look at the rendered box instead.
+		function visible(el) {
+			if (!el || !el.getClientRects().length) {
+				return false;
+			}
+			var r = el.getBoundingClientRect();
+			return r.width > 0 && r.height > 0 && window.getComputedStyle(el).visibility !== 'hidden';
+		}
+
+		function inDropdown(el) {
+			return !!(el && el.closest && el.closest('.dropdown-contents'));
+		}
+
+		// Close phpBB's own dropdowns (Quick links, profile...) when the panel opens.
+		function closePhpbbDropdowns() {
+			try {
+				var $ = window.jQuery;
+				var phpbb = window.phpbb;
+				if ($ && phpbb && phpbb.dropdownHandles && phpbb.toggleDropdown) {
+					$(phpbb.dropdownHandles).each(phpbb.toggleDropdown);
+				}
+			} catch (e) {
+				// Not a phpBB page or a modified core: nothing to close.
+			}
+		}
+
 		function place() {
 			if (isMobile()) {
 				panel.classList.add('nt-sheet');
@@ -261,15 +290,34 @@
 			}
 
 			panel.classList.remove('nt-sheet');
-			backdrop.hidden = true;
-			document.documentElement.classList.remove('nt-lock');
 
-			var anchor = (opener && opener.offsetParent !== null) ? opener : trigger;
-			var rect = anchor.getBoundingClientRect();
 			var vw = document.documentElement.clientWidth;
 			var vh = window.innerHeight;
 			var width = Math.min(440, vw - 16);
-			var left = Math.min(Math.max(8, rect.right - width), vw - width - 8);
+			var anchor = visible(opener) ? opener : (visible(trigger) ? trigger : null);
+
+			// Opened from a menu that has closed (Quick links): show it as a centred dialog.
+			if (!anchor || inDropdown(opener)) {
+				panel.classList.add('nt-centered');
+				backdrop.hidden = false;
+				document.documentElement.classList.add('nt-lock');
+				panel.style.bottom = '';
+				panel.style.width = width + 'px';
+				panel.style.left = Math.round((vw - width) / 2) + 'px';
+				panel.style.top = Math.round(Math.max(16, vh * 0.1)) + 'px';
+				panel.style.maxHeight = Math.max(260, Math.min(620, vh - Math.max(16, vh * 0.1) - 24)) + 'px';
+				return;
+			}
+
+			panel.classList.remove('nt-centered');
+			backdrop.hidden = true;
+			document.documentElement.classList.remove('nt-lock');
+
+			var rect = anchor.getBoundingClientRect();
+			// Buttons on the left half open the panel to the right, and vice versa.
+			var fromLeft = (rect.left + rect.width / 2) < vw / 2;
+			var left = fromLeft ? rect.left : rect.right - width;
+			left = Math.min(Math.max(8, left), vw - width - 8);
 			var below = vh - rect.bottom - 16;
 			var above = rect.top - 16;
 			var room;
@@ -297,6 +345,10 @@
 			}
 			isOpen = true;
 			opener = from || trigger;
+
+			if (inDropdown(opener)) {
+				closePhpbbDropdowns();
+			}
 
 			renderRecent();
 			applyTree();
@@ -327,7 +379,7 @@
 			}
 			isOpen = false;
 
-			panel.classList.remove('is-open');
+			panel.classList.remove('is-open', 'nt-centered');
 			panel.hidden = true;
 			backdrop.hidden = true;
 			document.documentElement.classList.remove('nt-lock');
@@ -438,9 +490,15 @@
 
 		/* ---------- clicks ---------- */
 
-		trigger.addEventListener('click', function () {
-			toggleFrom(trigger);
-		});
+		if (hasBarTrigger) {
+			trigger.addEventListener('click', function (e) {
+				// Inside a phpBB menu: do not let the click reach phpBB's own handlers.
+				if (inDropdown(trigger)) {
+					e.preventDefault();
+				}
+				toggleFrom(trigger);
+			});
+		}
 
 		if (fab) {
 			fab.addEventListener('click', function () {

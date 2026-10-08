@@ -21,7 +21,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// Impostazioni
-	'ACP_NEWTOPIC_SETTINGS_EXPLAIN' => 'Il pulsante «Nuovo argomento» compare nella barra dei percorsi di ogni pagina e apre un elenco dei forum in cui l’utente può davvero scrivere. Categorie, collegamenti, forum chiusi e forum senza permesso non sono mai cliccabili.',
+	'ACP_NEWTOPIC_SETTINGS_EXPLAIN' => 'Il pulsante «Nuovo argomento» compare in ogni pagina, nella posizione scelta qui sotto, e apre un elenco dei forum in cui l’utente può davvero scrivere. Categorie, collegamenti, forum chiusi e forum senza permesso non sono mai cliccabili.',
 	'ACP_NEWTOPIC_LEGEND_GENERAL'   => 'Generale',
 	'ACP_NEWTOPIC_LEGEND_LIST'      => 'Elenco dei forum',
 	'ACP_NEWTOPIC_LEGEND_LOOK'      => 'Aspetto e smartphone',
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'ACP_NEWTOPIC_RECENT'           => 'Forum usati di recente',
 	'ACP_NEWTOPIC_RECENT_EXPLAIN'   => 'Quanti forum mostrare in cima all’elenco, tra quelli scelti di recente da quell’utente su quel dispositivo. 0 per disattivare.',
 	'ACP_NEWTOPIC_MOBILE'           => 'Su smartphone',
-	'ACP_NEWTOPIC_MOBILE_EXPLAIN'   => 'Sotto i 700 pixel di larghezza l’elenco si apre sempre come pannello dal basso.',
+	'ACP_NEWTOPIC_MOBILE_EXPLAIN'   => 'Sotto i 700 pixel di larghezza l’elenco si apre sempre come pannello dal basso. Con la posizione «Solo pulsante fluttuante» conta solo «Nascondi».',
 	'ACP_NEWTOPIC_MOBILE_BAR'       => 'Pulsante compatto nella barra',
 	'ACP_NEWTOPIC_MOBILE_FAB'       => 'Pulsante fluttuante in basso',
 	'ACP_NEWTOPIC_MOBILE_OFF'       => 'Nascondi',
@@ -57,6 +57,21 @@ $lang = array_merge($lang, array(
 	'ACP_NEWTOPIC_ACCENT_EXPLAIN'   => 'Colore del pulsante e dell’evidenziazione nell’elenco.',
 	'ACP_NEWTOPIC_ERR_ACCENT'       => 'Il colore deve essere nel formato esadecimale #rrggbb.',
 	'ACP_NEWTOPIC_SAVED'            => 'Impostazioni salvate.',
+
+	// Posizione / Position
+	'ACP_NEWTOPIC_LEGEND_POSITION'  => 'Posizione',
+	'ACP_NEWTOPIC_POSITION'         => 'Posizione del pulsante',
+	'ACP_NEWTOPIC_POSITION_EXPLAIN' => 'Dove compare il pulsante «Nuovo argomento» in tutte le pagine del forum. Il pannello con l’elenco dei forum è lo stesso in tutte le posizioni.',
+	'ACP_NEWTOPIC_POS_BREADCRUMBS'  => 'Barra dei percorsi (a destra)',
+	'ACP_NEWTOPIC_POS_NAVBAR_LEFT'  => 'Barra di navigazione (accanto a FAQ)',
+	'ACP_NEWTOPIC_POS_NAVBAR_RIGHT' => 'Barra di navigazione (accanto al profilo)',
+	'ACP_NEWTOPIC_POS_QUICKLINKS'   => 'Menu «Collegamenti rapidi»',
+	'ACP_NEWTOPIC_POS_PAGE_TOP'     => 'Sopra il contenuto della pagina',
+	'ACP_NEWTOPIC_POS_FLOATING'     => 'Solo pulsante fluttuante',
+	'ACP_NEWTOPIC_POS_UNSUPPORTED'  => '(non supportata dallo stile predefinito)',
+	'ACP_NEWTOPIC_POSITION_WARN'    => 'Lo stile predefinito non ha il punto di aggancio per questa posizione: con questo stile il pulsante non comparirebbe. Scegli un’altra posizione oppure controlla gli stili nella scheda Check-up.',
+	'ACP_NEWTOPIC_ERR_POSITION'     => 'La posizione scelta non è valida.',
+	'ACP_NEWTOPIC_CHK_STYLE_NONE'   => 'nessuna',
 
 	// Badge e crediti
 	'ACP_NEWTOPIC_BADGE_VERSION'    => 'versione',
@@ -111,8 +126,8 @@ $lang = array_merge($lang, array(
 	'ACP_NEWTOPIC_CHK_LANG_BAD'     => 'Manca la traduzione per: %s. Chi usa queste lingue vedrà i testi in inglese.',
 	'ACP_NEWTOPIC_CHK_STYLE'        => 'Stile «%s»',
 	'ACP_NEWTOPIC_CHK_STYLE_DEFAULT' => '(predefinito)',
-	'ACP_NEWTOPIC_CHK_STYLE_OK'     => 'Ha entrambi i punti di aggancio usati dall’estensione.',
-	'ACP_NEWTOPIC_CHK_STYLE_BAD'    => 'Mancano gli eventi template %s: con questo stile il pulsante non compare o non ha la sua grafica.',
+	'ACP_NEWTOPIC_CHK_STYLE_OK'     => 'Con la posizione scelta («%1$s») il pulsante compare. Posizioni disponibili con questo stile: %2$s.',
+	'ACP_NEWTOPIC_CHK_STYLE_BAD'    => 'Con la posizione scelta («%1$s») il pulsante non compare: mancano gli eventi template %2$s. Posizioni disponibili con questo stile: %3$s.',
 	'ACP_NEWTOPIC_CHK_STRUCTURE'    => 'Struttura del forum',
 	'ACP_NEWTOPIC_CHK_STRUCTURE_INFO' => 'Forum: %1$d, categorie: %2$d, collegamenti: %3$d.',
 	'ACP_NEWTOPIC_CHK_EXCLUDED'     => 'Forum esclusi',

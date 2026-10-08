@@ -3,8 +3,8 @@
 	"type": "phpbb-extension",
 	"description": "Responsive picker to open a new topic in any forum, from every page of the board.",
 	"homepage": "https://netshadows.de",
-	"version": "2.0.1",
-	"time": "2026-10-04",
+	"version": "2.0.2",
+	"time": "2026-10-08",
 	"keywords": ["phpbb", "extension", "newtopic", "new topic"],
 	"license": "GPL-2.0-only",
 	"authors": [

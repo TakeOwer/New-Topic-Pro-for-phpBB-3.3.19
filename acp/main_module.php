@@ -104,6 +104,12 @@ class main_module
 				$errors[] = $this->language->lang('ACP_NEWTOPIC_ERR_ACCENT');
 			}
 
+			$position = $this->request->variable('newtopic_position', \salvocortesiano\newtopic\core\positions::DEFAULT_POSITION);
+			if (!\salvocortesiano\newtopic\core\positions::is_valid($position))
+			{
+				$errors[] = $this->language->lang('ACP_NEWTOPIC_ERR_POSITION');
+			}
+
 			$mobile = $this->request->variable('newtopic_mobile_mode', 'bar');
 			if (!in_array($mobile, array('bar', 'fab', 'off'), true))
 			{
@@ -114,6 +120,7 @@ class main_module
 			{
 				$this->config->set('newtopic_enable', $this->request->variable('newtopic_enable', 0) ? 1 : 0);
 				$this->config->set('newtopic_guests', $this->request->variable('newtopic_guests', 0) ? 1 : 0);
+				$this->config->set('newtopic_position', $position);
 				$this->config->set('newtopic_hide_parents', $this->request->variable('newtopic_hide_parents', 0) ? 1 : 0);
 				$this->config->set('newtopic_show_denied', $this->request->variable('newtopic_show_denied', 0) ? 1 : 0);
 				$this->config->set('newtopic_search', $this->request->variable('newtopic_search', 0) ? 1 : 0);
@@ -135,6 +142,8 @@ class main_module
 			global $phpbb_root_path, $phpEx;
 			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 		}
+
+		$this->assign_positions();
 
 		$this->template->assign_vars(array(
 			'S_ERROR'                => (bool) $errors,
@@ -209,6 +218,30 @@ class main_module
 			'S_CHECKUP_RAN'  => $ran,
 			'SIMULATE_USER'  => $username,
 			'U_ACTION'       => $this->u_action,
+		));
+	}
+
+	/**
+	 * Options of the "Button position" select. Positions the default style
+	 * cannot show are flagged, so the admin knows before saving.
+	 */
+	protected function assign_positions()
+	{
+		$current   = \salvocortesiano\newtopic\core\positions::sanitize((string) $this->config['newtopic_position']);
+		$supported = $this->checkup->supported_positions((int) $this->config['default_style'], (bool) $this->config['newtopic_guests']);
+
+		foreach (\salvocortesiano\newtopic\core\positions::all() as $position)
+		{
+			$this->template->assign_block_vars('positions', array(
+				'VALUE'        => $position,
+				'NAME'         => $this->language->lang(\salvocortesiano\newtopic\core\positions::lang_key($position)),
+				'S_SELECTED'   => $position === $current,
+				'S_SUPPORTED'  => in_array($position, $supported, true),
+			));
+		}
+
+		$this->template->assign_vars(array(
+			'S_NT_POSITION_SUPPORTED' => in_array($current, $supported, true),
 		));
 	}
 

@@ -21,7 +21,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// Settings
-	'ACP_NEWTOPIC_SETTINGS_EXPLAIN' => 'The “New topic” button appears in the breadcrumb bar of every page and opens a list of the forums the user can actually post in. Categories, links, locked forums and forums without permission are never clickable.',
+	'ACP_NEWTOPIC_SETTINGS_EXPLAIN' => 'The “New topic” button appears on every page, in the position chosen below, and opens a list of the forums the user can actually post in. Categories, links, locked forums and forums without permission are never clickable.',
 	'ACP_NEWTOPIC_LEGEND_GENERAL'   => 'General',
 	'ACP_NEWTOPIC_LEGEND_LIST'      => 'Forum list',
 	'ACP_NEWTOPIC_LEGEND_LOOK'      => 'Appearance and phones',
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'ACP_NEWTOPIC_RECENT'           => 'Recently used forums',
 	'ACP_NEWTOPIC_RECENT_EXPLAIN'   => 'How many of the forums that user recently picked on that device to show at the top. 0 to turn off.',
 	'ACP_NEWTOPIC_MOBILE'           => 'On phones',
-	'ACP_NEWTOPIC_MOBILE_EXPLAIN'   => 'Below 700 pixels wide the list always opens as a bottom sheet.',
+	'ACP_NEWTOPIC_MOBILE_EXPLAIN'   => 'Below 700 pixels wide the list always opens as a bottom sheet. With the “Floating button only” position only “Hide” applies.',
 	'ACP_NEWTOPIC_MOBILE_BAR'       => 'Compact button in the bar',
 	'ACP_NEWTOPIC_MOBILE_FAB'       => 'Floating button at the bottom',
 	'ACP_NEWTOPIC_MOBILE_OFF'       => 'Hide',
@@ -57,6 +57,21 @@ $lang = array_merge($lang, array(
 	'ACP_NEWTOPIC_ACCENT_EXPLAIN'   => 'Colour of the button and of the highlight in the list.',
 	'ACP_NEWTOPIC_ERR_ACCENT'       => 'The colour must be a hexadecimal value like #rrggbb.',
 	'ACP_NEWTOPIC_SAVED'            => 'Settings saved.',
+
+	// Posizione / Position
+	'ACP_NEWTOPIC_LEGEND_POSITION'  => 'Position',
+	'ACP_NEWTOPIC_POSITION'         => 'Button position',
+	'ACP_NEWTOPIC_POSITION_EXPLAIN' => 'Where the “New topic” button appears on every page of the board. The panel with the forum list is the same in every position.',
+	'ACP_NEWTOPIC_POS_BREADCRUMBS'  => 'Breadcrumb bar (on the right)',
+	'ACP_NEWTOPIC_POS_NAVBAR_LEFT'  => 'Navigation bar (next to FAQ)',
+	'ACP_NEWTOPIC_POS_NAVBAR_RIGHT' => 'Navigation bar (next to the user profile)',
+	'ACP_NEWTOPIC_POS_QUICKLINKS'   => '“Quick links” menu',
+	'ACP_NEWTOPIC_POS_PAGE_TOP'     => 'Above the page content',
+	'ACP_NEWTOPIC_POS_FLOATING'     => 'Floating button only',
+	'ACP_NEWTOPIC_POS_UNSUPPORTED'  => '(not supported by the default style)',
+	'ACP_NEWTOPIC_POSITION_WARN'    => 'The default style has no hook for this position: with that style the button would not appear. Pick another position or check the styles in the Check-up tab.',
+	'ACP_NEWTOPIC_ERR_POSITION'     => 'The selected position is not valid.',
+	'ACP_NEWTOPIC_CHK_STYLE_NONE'   => 'none',
 
 	// Badges and credits
 	'ACP_NEWTOPIC_BADGE_VERSION'    => 'version',
@@ -111,8 +126,8 @@ $lang = array_merge($lang, array(
 	'ACP_NEWTOPIC_CHK_LANG_BAD'     => 'No translation for: %s. Users of these languages will see English text.',
 	'ACP_NEWTOPIC_CHK_STYLE'        => 'Style “%s”',
 	'ACP_NEWTOPIC_CHK_STYLE_DEFAULT' => '(default)',
-	'ACP_NEWTOPIC_CHK_STYLE_OK'     => 'Has both template events used by the extension.',
-	'ACP_NEWTOPIC_CHK_STYLE_BAD'    => 'Missing template events %s: with this style the button does not appear or is unstyled.',
+	'ACP_NEWTOPIC_CHK_STYLE_OK'     => 'With the chosen position (“%1$s”) the button appears. Positions available with this style: %2$s.',
+	'ACP_NEWTOPIC_CHK_STYLE_BAD'    => 'With the chosen position (“%1$s”) the button does not appear: template events %2$s are missing. Positions available with this style: %3$s.',
 	'ACP_NEWTOPIC_CHK_STRUCTURE'    => 'Board structure',
 	'ACP_NEWTOPIC_CHK_STRUCTURE_INFO' => 'Forums: %1$d, categories: %2$d, links: %3$d.',
 	'ACP_NEWTOPIC_CHK_EXCLUDED'     => 'Excluded forums',

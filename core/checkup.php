@@ -166,7 +166,13 @@ class checkup
 		$files = array(
 			'styles/all/theme/newtopic.css',
 			'styles/all/template/js/newtopic.js',
+			'styles/all/template/newtopic_widget.html',
 			'styles/all/template/event/overall_header_breadcrumbs_after.html',
+			'styles/all/template/event/overall_header_navigation_append.html',
+			'styles/all/template/event/navbar_header_user_profile_append.html',
+			'styles/all/template/event/navbar_header_logged_out_content.html',
+			'styles/all/template/event/navbar_header_quick_links_after.html',
+			'styles/all/template/event/overall_header_page_body_before.html',
 			'styles/all/template/event/overall_header_head_append.html',
 			'language/en/common.php',
 		);
@@ -221,47 +227,32 @@ class checkup
 		}
 	}
 
+	/** @var array|null style_id => row */
+	protected $styles = null;
+
+	/** @var array chain key => event names */
+	protected $event_cache = array();
+
 	/**
-	 * Active styles must expose the two template events the extension hooks into.
+	 * Every active style must expose the template events used by the chosen position.
 	 */
 	protected function check_styles()
 	{
-		$sql    = 'SELECT style_id, style_name, style_path, style_parent_id, style_active FROM ' . STYLES_TABLE;
-		$result = $this->db->sql_query($sql);
-		$styles = array();
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$styles[(int) $row['style_id']] = $row;
-		}
-		$this->db->sql_freeresult($result);
+		$position = positions::sanitize((string) $this->config['newtopic_position']);
+		$guests   = !empty($this->config['newtopic_guests']);
+		$required = positions::required_events($position, $guests);
+		$pos_name = $this->language->lang(positions::lang_key($position));
 
-		$events = array('overall_header_breadcrumbs_after', 'overall_header_head_append');
-
-		foreach ($styles as $style_id => $style)
+		foreach ($this->load_styles() as $style_id => $style)
 		{
 			if (empty($style['style_active']))
 			{
 				continue;
 			}
 
-			// The style and its parents, child first.
-			$chain = array();
-			$guard = 0;
-			$cursor = $style_id;
-			while ($cursor && isset($styles[$cursor]) && $guard++ < 10)
-			{
-				$chain[]  = $styles[$cursor]['style_path'];
-				$cursor   = (int) $styles[$cursor]['style_parent_id'];
-			}
-
-			$missing = array();
-			foreach ($events as $event_name)
-			{
-				if (!$this->style_has_event($chain, $event_name))
-				{
-					$missing[] = $event_name;
-				}
-			}
+			$events    = $this->style_events($style_id);
+			$missing   = array_values(array_diff($required, $events));
+			$available = $this->position_names($this->supported_positions($style_id, $guests));
 
 			$title = $this->language->lang('ACP_NEWTOPIC_CHK_STYLE', $style['style_name']);
 			if ((int) $this->config['default_style'] === $style_id)
@@ -271,20 +262,106 @@ class checkup
 
 			if ($missing)
 			{
-				$this->add('error', $title, $this->language->lang('ACP_NEWTOPIC_CHK_STYLE_BAD', implode(', ', $missing)));
+				$this->add('error', $title, $this->language->lang('ACP_NEWTOPIC_CHK_STYLE_BAD', $pos_name, implode(', ', $missing), $available));
 			}
 			else
 			{
-				$this->add('ok', $title, $this->language->lang('ACP_NEWTOPIC_CHK_STYLE_OK'));
+				$this->add('ok', $title, $this->language->lang('ACP_NEWTOPIC_CHK_STYLE_OK', $pos_name, $available));
 			}
 		}
 	}
 
-	protected function style_has_event(array $chain, $event_name)
+	/**
+	 * Positions a style can show the button in.
+	 *
+	 * @param int  $style_id
+	 * @param bool $guests
+	 * @return string[]
+	 */
+	public function supported_positions($style_id, $guests = false)
 	{
+		$events    = $this->style_events((int) $style_id);
+		$supported = array();
+
+		foreach (positions::all() as $position)
+		{
+			if (!array_diff(positions::required_events($position, $guests), $events))
+			{
+				$supported[] = $position;
+			}
+		}
+
+		return $supported;
+	}
+
+	protected function position_names(array $list)
+	{
+		if (!$list)
+		{
+			return $this->language->lang('ACP_NEWTOPIC_CHK_STYLE_NONE');
+		}
+
+		$names = array();
+		foreach ($list as $position)
+		{
+			$names[] = $this->language->lang(positions::lang_key($position));
+		}
+
+		return implode(', ', $names);
+	}
+
+	protected function load_styles()
+	{
+		if ($this->styles === null)
+		{
+			$sql    = 'SELECT style_id, style_name, style_path, style_parent_id, style_active FROM ' . STYLES_TABLE;
+			$result = $this->db->sql_query($sql);
+			$this->styles = array();
+			while ($row = $this->db->sql_fetchrow($result))
+			{
+				$this->styles[(int) $row['style_id']] = $row;
+			}
+			$this->db->sql_freeresult($result);
+		}
+
+		return $this->styles;
+	}
+
+	/**
+	 * Template events found in the templates a style really uses.
+	 *
+	 * A child style that overrides a template (e.g. navbar_header.html)
+	 * replaces the parent's copy, so each file is taken from the first
+	 * style of the chain that has it, child first, like phpBB does.
+	 *
+	 * @param int $style_id
+	 * @return string[]
+	 */
+	public function style_events($style_id)
+	{
+		$styles = $this->load_styles();
+		$chain  = array();
+		$guard  = 0;
+		$cursor = (int) $style_id;
+
+		while ($cursor && isset($styles[$cursor]) && $guard++ < 10)
+		{
+			$chain[] = basename($styles[$cursor]['style_path']);
+			$cursor  = (int) $styles[$cursor]['style_parent_id'];
+		}
+
+		$key = implode('/', $chain);
+		if (isset($this->event_cache[$key]))
+		{
+			return $this->event_cache[$key];
+		}
+
+		$seen   = array();
+		$events = array();
+
 		foreach ($chain as $style_path)
 		{
-			$dir = $this->root_path . 'styles/' . basename($style_path) . '/template/';
+			$dir = $this->root_path . 'styles/' . $style_path . '/template/';
 			if (!is_dir($dir))
 			{
 				continue;
@@ -292,15 +369,24 @@ class checkup
 
 			foreach ((array) glob($dir . '*.html') as $file)
 			{
-				$content = (string) @file_get_contents($file);
-				if (strpos($content, $event_name) !== false && preg_match('/EVENT\s+' . preg_quote($event_name, '/') . '\b/', $content))
+				$name = basename($file);
+				if (isset($seen[$name]))
 				{
-					return true;
+					continue;
+				}
+				$seen[$name] = true;
+
+				if (preg_match_all('/EVENT\s+([a-z0-9_]+)/', (string) @file_get_contents($file), $m))
+				{
+					foreach ($m[1] as $event_name)
+					{
+						$events[$event_name] = true;
+					}
 				}
 			}
 		}
 
-		return false;
+		return $this->event_cache[$key] = array_keys($events);
 	}
 
 	protected function check_structure(array $options)

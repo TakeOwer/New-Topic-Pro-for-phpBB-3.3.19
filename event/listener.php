@@ -121,6 +121,7 @@ class listener implements EventSubscriberInterface
 			'NEWTOPIC_L_RESULTS_1' => isset($results[1]) ? $results[1] : '',
 			'NEWTOPIC_L_RESULTS_2' => isset($results[2]) ? $results[2] : '',
 			'S_NEWTOPIC_SHOW'      => true,
+			'NEWTOPIC_POSITION'    => \salvocortesiano\newtopic\core\positions::sanitize((string) $this->config['newtopic_position']),
 			'S_NEWTOPIC_SEARCH'    => (bool) $this->config['newtopic_search'],
 			'NEWTOPIC_MOBILE'      => in_array($this->config['newtopic_mobile_mode'], array('bar', 'fab', 'off'), true) ? $this->config['newtopic_mobile_mode'] : 'bar',
 			'NEWTOPIC_FAB_SIDE'    => $this->config['newtopic_fab_side'] === 'left' ? 'left' : 'right',
